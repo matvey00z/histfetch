@@ -6,12 +6,14 @@ import glob
 import os
 import re
 import json
+import shutil
 
 import address_storage
 
 dbpath = os.path.expanduser("~/.mozilla/firefox/*.default/places.sqlite")
 dbpaths = glob.glob(dbpath)
 config_path = os.path.expanduser("~/.config/histfetch/config.json")
+default_config_path = "default_config.json"
 
 def isSQLite3(filename):
     from os.path import isfile, getsize
@@ -50,14 +52,21 @@ def compile_address_patterns(config):
         )
     return address_patterns
 
+def read_config_file(config_path):
+    with open(config_path, "rt") as config_file:
+        config = json.load(config_file)
+    return compile_address_patterns(config)
+
 def main():
+    if not os.path.isfile(config_path):
+        print("No config fine found; create default", file=sys.stderr)
+        shutil.copyfile(default_config_path, config_path)
     try:
-        with open(config_path, "rt") as config_file:
-            config = json.load(config_file)
-        address_patterns = compile_address_patterns(config)
+        address_patterns = read_config_file(config_path)
     except:
         print("Can't read config file:", sys.exc_info(), file=sys.stderr)
         exit(1)
+
     storage = address_storage.AddressStore(address_patterns)
     if not dbpaths:
         print("No paths to import words from", file=sys.stderr)

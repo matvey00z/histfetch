@@ -1,0 +1,11 @@
+{    
+    "patterns" : [
+        {
+            "dictionary_address" : "www.oxfordlearnersdictionaries.com",
+            "word_patterns" : [
+                ".*/definition/.*?q=(.*)",
+                ".*/definition/.*/(.*)#"
+            ]
+        }
+    ]
+}
