@@ -7,12 +7,14 @@ import os
 import re
 import json
 import shutil
+import errno
 
 import address_storage
 
 dbpath = os.path.expanduser("~/.mozilla/firefox/*.default/places.sqlite")
 dbpaths = glob.glob(dbpath)
-config_path = os.path.expanduser("~/.config/histfetch/config.json")
+config_directory_path = os.path.expanduser("~/.config/histfetch")
+config_path = "/".join([config_directory_path, "config.json"])
 default_config_path = "default_config.json"
 
 def isSQLite3(filename):
@@ -60,6 +62,13 @@ def read_config_file(config_path):
 def main():
     if not os.path.isfile(config_path):
         print("No config fine found; create default", file=sys.stderr)
+        try:
+            os.makedirs(config_directory_path)
+        except OSError as exception:
+            if exception.errno != errno.EEXIST:
+                print("Can't create default config:", sys.exc_info(),
+                        file=sys.stderr)
+                exit(1)
         shutil.copyfile(default_config_path, config_path)
     try:
         address_patterns = read_config_file(config_path)
