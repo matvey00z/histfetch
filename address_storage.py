@@ -1,21 +1,23 @@
 
 class AddressStore:
-    def __init__(self, address_patterns, last_time):
+    def __init__(self, address_patterns, last_time, new_patterns):
         self.addresses = []
         # list of tuples: [(dictionary_address, [word_patterns])]
         self.address_patterns = address_patterns
         self.start_time = last_time
         self.last_time = last_time
+        self.new_patterns = new_patterns
 
     def feed(self, address, time):
+        patterns_to_check = self.address_patterns
         if time:
             time = int(time)
             print
-            if time < self.start_time:
-                return
+            if time <= self.start_time:
+                patterns_to_check = self.new_patterns
             if time > self.last_time:
                 self.last_time = time
-        for address_pattern_pair in self.address_patterns:
+        for address_pattern_pair in patterns_to_check:
             # check if it is a dictionary
             if not address_pattern_pair[0].search(address):
                 continue

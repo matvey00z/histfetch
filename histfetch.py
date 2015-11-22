@@ -104,7 +104,8 @@ def main():
         config_update = get_config_update(last_config, config)
         last_time = last_config["last_time"]
 
-    storage = address_storage.AddressStore(address_patterns, last_time)
+    storage = address_storage.AddressStore(address_patterns, last_time,
+            config_update)
     if not dbpaths:
         print("No paths to import words from", file=sys.stderr)
         sys.exit(1)
