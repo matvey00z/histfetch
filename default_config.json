@@ -1,0 +1,11 @@
+{    
+    "patterns" : {
+        "www.oxfordlearnersdictionaries.com" : [
+            ".*/definition/.*?q=(.*)",
+            ".*/definition/.*/(.*)#"
+        ],
+        "lingvo-online.ru" : [
+            ".*/en/Translate/.*/(\\w+)$"
+        ]
+    }
+}
