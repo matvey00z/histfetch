@@ -1,12 +1,14 @@
 
 class AddressStore:
-    def __init__(self, address_patterns, last_time, new_patterns):
+    def __init__(self, address_patterns, last_time, new_patterns,
+            storage_filename):
         self.addresses = []
         # list of tuples: [(dictionary_address, [word_patterns])]
         self.address_patterns = address_patterns
         self.start_time = last_time
         self.last_time = last_time
         self.new_patterns = new_patterns
+        self.storage_filename = storage_filename
 
     def feed(self, address, time):
         patterns_to_check = self.address_patterns
@@ -35,5 +37,7 @@ class AddressStore:
         return self.last_time
 
     def print_all(self):
-        for (word, address) in self.addresses:
-            print(word.ljust(20, '.') + "[" + address + "]")
+        with open(self.storage_filename, "at") as storage_file:
+            for (word, address) in self.addresses:
+                print(word.ljust(20, '.') + "[" + address + "]",
+                        file=storage_file)

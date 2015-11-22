@@ -10,6 +10,7 @@ import config
 
 dbpath = os.path.expanduser("~/.mozilla/firefox/*.default/places.sqlite")
 dbpaths = glob.glob(dbpath)
+storage_filename = "/".join([config.config_directory_path, "new_words.txt"])
 
 def isSQLite3(filename):
     from os.path import isfile, getsize
@@ -39,7 +40,8 @@ def import_from_database(path, address_storage):
 def main():
     config_parser = config.ConfigParser()
     storage = address_storage.AddressStore(config_parser.address_patterns,
-            config_parser.last_time, config_parser.config_update)
+            config_parser.last_time, config_parser.config_update,
+            storage_filename)
     if not dbpaths:
         print("No paths to import words from", file=sys.stderr)
         sys.exit(1)
