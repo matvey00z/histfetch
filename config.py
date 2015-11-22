@@ -40,19 +40,19 @@ def read_config_file(config_path):
 def get_config_update(old_config, new_config):
     old_patterns = old_config["patterns"]
     new_patterns = new_config["patterns"]
-    patterns_update = []
-    for new_pattern_pair in new_config.items():
+    patterns_update = {}
+    for new_pattern_pair in new_patterns.items():
         dictionary_address = new_pattern_pair[0]
-        old_word_patterns = old_config.get(dictionary_address, None)
+        old_word_patterns = old_patterns.get(dictionary_address, None)
         if not old_word_patterns:
-            patterns_update.append(new_pattern_pair)
+            patterns_update[new_pattern_pair[0]] = new_pattern_pair[1]
             continue
         new_word_patterns = new_pattern_pair[1]
         word_update = [pattern for pattern in new_word_patterns
                 if pattern not in old_word_patterns]
         if word_update:
-            patterns_update.append((dictionary_address, word_update))
-    return patterns_update
+            patterns_update[dictionary_address] = word_update
+    return compile_address_patterns({"patterns" : patterns_update})
 
 class ConfigParser:
     def __init__(self):
