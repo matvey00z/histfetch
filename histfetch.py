@@ -45,12 +45,12 @@ def import_from_database(path, address_storage):
 
 def compile_address_patterns(config):
     address_patterns = []
-    for pattern_pair in config["patterns"]:
+    for pattern_pair in config["patterns"].items():
         address_patterns.append(
             (
-                re.compile(pattern_pair["dictionary_address"]),
+                re.compile(pattern_pair[0]),
                 [re.compile(word_pattern)
-                    for word_pattern in pattern_pair["word_patterns"]]
+                    for word_pattern in pattern_pair[1]]
             )
         )
     return address_patterns

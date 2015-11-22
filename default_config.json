@@ -1,11 +1,8 @@
 {    
-    "patterns" : [
-        {
-            "dictionary_address" : "www.oxfordlearnersdictionaries.com",
-            "word_patterns" : [
-                ".*/definition/.*?q=(.*)",
-                ".*/definition/.*/(.*)#"
-            ]
-        }
-    ]
+    "patterns" : {
+        "www.oxfordlearnersdictionaries.com" : [
+            ".*/definition/.*?q=(.*)",
+            ".*/definition/.*/(.*)#"
+        ]
+    }
 }
