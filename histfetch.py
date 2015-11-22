@@ -60,6 +60,24 @@ def read_config_file(config_path):
         config = json.load(config_file)
     return config
 
+def get_config_update(old_config, new_config):
+    old_patterns = old_config["patterns"]
+    new_patterns = new_config["patterns"]
+    patterns_update = []
+    for new_pattern_pair in new_config.items():
+        dictionary_address = new_pattern_pair[0]
+        old_word_patterns = old_config.get(dictionary_address, None)
+        if not old_word_patterns:
+            patterns_update.append(new_pattern_pair)
+            continue
+        new_word_patterns = new_pattern_pair[1]
+        word_update = [pattern for pattern in new_word_patterns
+                if pattern not in old_word_patterns]
+        if word_update:
+            patterns_update.append((dictionary_address, word_update))
+    return patterns_update
+
+
 def create_default_config():
     try:
         os.makedirs(config_directory_path)
@@ -80,13 +98,20 @@ def main():
     except:
         print("Can't read config file:", sys.exc_info(), file=sys.stderr)
         exit(1)
+    last_time = 0
+    if os.path.isfile(last_config_path):
+        last_config = read_config_file(last_config_path)
+        config_update = get_config_update(last_config, config)
+        last_time = last_config["last_time"]
 
-    storage = address_storage.AddressStore(address_patterns)
+    storage = address_storage.AddressStore(address_patterns, last_time)
     if not dbpaths:
         print("No paths to import words from", file=sys.stderr)
         sys.exit(1)
     for path in dbpaths:
         import_from_database(path, storage)
+
+    config["last_time"] = storage.get_last_time()
     with open(last_config_path, "wt") as last_config_file:
         json.dump(config, last_config_file)
     storage.print_all()
